@@ -1,0 +1,81 @@
+DROP TABLE IF EXISTS Matrículas;
+DROP TABLE IF EXISTS Alunos; 
+DROP TABLE IF EXISTS Instrutores;
+DROP TABLE IF EXISTS Horários;
+DROP TABLE IF EXISTS Endereços;
+
+CREATE TABLE Endereços(
+    Sequencial INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    Logradouro VARCHAR(50) NOT NULL,
+    Complemento VARCHAR(50) NOT NULL,
+    Bairro VARCHAR(50) NOT NULL,
+    Número INT NOT NULL,
+    CEP VARCHAR(20) NOT NULL,
+    Cidade VARCHAR(30) NOT NULL,
+    UF INT NOT NULL
+);
+
+CREATE TABLE Horários(
+    Sequencial INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    HoraDeInício TIME NOT NULL,
+    HoraDeTérmino TIME NOT NULL,
+    AulaSegunda BIT(1) NOT NULL,
+    AulaTerça BIT(1) NOT NULL,
+    AulaQuarta BIT(1) NOT NULL,
+    AulaQuinta BIT(1) NOT NULL,
+    AulaSexta BIT(1) NOT NULL,
+    AulaSábado BIT(1) NOT NULL,
+    AulaDomingo BIT(1) NOT NULL
+);
+
+CREATE TABLE Alunos(
+    CPF VARCHAR(15) NOT NULL PRIMARY KEY,
+    Nome VARCHAR(50) NOT NULL,
+    RG VARCHAR(12) NOT NULL,
+    EndereçoId INT NOT NULL,
+    DataNascimento DATE NOT NULL,
+    Sexo  enum('M','F') NOT NULL,
+    Telefone VARCHAR(20) NOT NULL,
+    Email VARCHAR(50) NOT NULL,
+    CONSTRAINT EndereçoId
+    	FOREIGN KEY (EndereçoId) REFERENCES Endereços(Sequencial) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE Instrutores(
+CPF VARCHAR(15) NOT NULL PRIMARY KEY,
+Nome VARCHAR(50) NOT NULL,
+RG VARCHAR(12) NOT NULL,
+EndereçoId INT NOT NULL,
+DataNascimento DATE NOT NULL,
+Sexo  enum('M','F') NOT NULL,
+Telefone VARCHAR(20) NOT NULL,
+Email VARCHAR(50) NOT NULL,
+DataContratação DATE NOT NULL,
+HorárioId INT NOT NULL,
+#Categoria ministradas
+CategoriaA BIT(1) NOT NULL,
+CategoriaB BIT(1) NOT NULL,
+CategoriaC BIT(1) NOT NULL,
+CategoriaD BIT(1) NOT NULL,
+CategoriaE BIT(1) NOT NULL,
+
+CONSTRAINT FOREIGN KEY (EndereçoId) REFERENCES Endereços(Sequencial) ON DELETE CASCADE ON UPDATE CASCADE,
+CONSTRAINT FOREIGN KEY (HorárioId) REFERENCES Horários(Sequencial) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE Matrículas(
+Sequencial INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+InstrutorId VARCHAR(15) NOT NULL,
+CategoriaA BIT(1) NOT NULL,
+CategoriaB BIT(1) NOT NULL,
+CategoriaC BIT(1) NOT NULL,
+CategoriaD BIT(1) NOT NULL,
+CategoriaE BIT(1) NOT NULL,
+DataMatrícula DATE NOT NULL,
+AlunoId VARCHAR(15) NOT NULL,
+AptoExamePsicotécnico BIT(1) /*NOT NULL*/,
+AptoExameMédico BIT(1) /*NOT NULL*/,
+CONSTRAINT FOREIGN KEY (InstrutorId) REFERENCES Instrutores (CPF) ON DELETE CASCADE ON UPDATE CASCADE,
+CONSTRAINT FOREIGN KEY (AlunoId) REFERENCES Alunos (CPF) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
